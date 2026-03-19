@@ -3,8 +3,6 @@ package com.example.ms_notificaciones.service;
 import com.example.ms_notificaciones.entity.RegistroNotificacion;
 import com.example.ms_notificaciones.repository.RegistroNotificacionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -15,13 +13,11 @@ public class NotificacionService {
     @Autowired
     private RegistroNotificacionRepository repository;
 
-    @Autowired
-    private JavaMailSender mailSender;
+    public RegistroNotificacion crearNotificacion(Long idPedido) {
 
-    public RegistroNotificacion crearNotificacion(Integer idPedido) {
-
-        if (idPedido == 99) {
-            throw new RuntimeException("Fallo simulado en notificaciones");
+        // Si el pedido termina en 99 o es el 99, fallamos para probar la SAGA
+        if (idPedido != null && idPedido == 99L) {
+            throw new RuntimeException("Fallo simulado en notificaciones para activar compensacion");
         }
 
         String mensaje = "Pedido " + idPedido + " COMPLETADO";
@@ -31,31 +27,6 @@ public class NotificacionService {
         registro.setMensaje(mensaje);
         registro.setFecha(LocalDateTime.now());
 
-        RegistroNotificacion guardado = repository.save(registro);
-
-        enviarCorreo(mensaje);
-
-        return guardado;
-    }
-
-    private void enviarCorreo(String mensaje) {
-        try {
-            System.out.println("Intentando enviar correo...");
-
-            SimpleMailMessage mail = new SimpleMailMessage();
-            mail.setTo("amoralesg45@miumg.edu.gt"); 
-            mail.setSubject("Confirmación de Pedido");
-            mail.setText(mensaje);
-
-            mail.setFrom("test@mailtrap.io"); 
-
-            mailSender.send(mail);
-
-            System.out.println("Correo enviado correctamente");
-
-        } catch (Exception e) {
-            System.out.println("ERROR AL ENVIAR CORREO:");
-            e.printStackTrace();
-        }
+        return repository.save(registro);
     }
 }

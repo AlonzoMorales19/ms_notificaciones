@@ -13,7 +13,7 @@ public class RegistroNotificacion {
     private Long id;
 
     @Column(name = "id_pedido", nullable = false)
-    private Integer idPedido;
+    private Long idPedido;
 
     @Column(name = "mensaje", nullable = false, columnDefinition = "TEXT")
     private String mensaje;
@@ -24,7 +24,7 @@ public class RegistroNotificacion {
     public RegistroNotificacion() {
     }
 
-    public RegistroNotificacion(Long id, Integer idPedido, String mensaje, LocalDateTime fecha) {
+    public RegistroNotificacion(Long id, Long idPedido, String mensaje, LocalDateTime fecha) {
         this.id = id;
         this.idPedido = idPedido;
         this.mensaje = mensaje;
@@ -35,11 +35,11 @@ public class RegistroNotificacion {
         return id;
     }
 
-    public Integer getIdPedido() {
+    public Long getIdPedido() {
         return idPedido;
     }
 
-    public void setIdPedido(Integer idPedido) {
+    public void setIdPedido(Long idPedido) {
         this.idPedido = idPedido;
     }
 

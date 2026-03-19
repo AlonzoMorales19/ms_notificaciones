@@ -9,24 +9,34 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/notificaciones")
+@RequestMapping("/api/notifications")
 public class NotificacionController {
 
     @Autowired
     private NotificacionService service;
 
+    @Autowired
+    private com.example.ms_notificaciones.repository.RegistroNotificacionRepository repository;
+
+    @GetMapping
+    public java.util.List<com.example.ms_notificaciones.entity.RegistroNotificacion> listarTodas() {
+        return repository.findAll();
+    }
+
     @PostMapping
     public ResponseEntity<?> crearNotificacion(@RequestBody Map<String, Object> body) {
-
         try {
-            Integer idPedido = Integer.valueOf(body.get("idPedido").toString());
-
+            // Cambio crítico: Usar Long en lugar de Integer
+            Long idPedido = Long.valueOf(body.get("idPedido").toString());
             RegistroNotificacion registro = service.crearNotificacion(idPedido);
-
             return ResponseEntity.ok(registro);
-
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/health")
+    public String health() {
+        return "MS Notifications is ALIVE and kicking!";
     }
 }
